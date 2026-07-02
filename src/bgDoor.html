@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>人理保障机构 · 冠位指定 & 异闻带 统合全志</title>
+        <style>
+            /* --- 核心变量：Apple 极简暗黑与迦勒底双色冷光 --- */
+            :root {
+                --bg-color: #030712;
+                --card-bg: rgba(15, 23, 42, 0.45);
+                --border-color: rgba(255, 255, 255, 0.05);
+                --border-hover: rgba(6, 182, 212, 0.35);
+                --text-primary: #f8fafc;
+                --text-secondary: #cbd5e1;
+                --text-muted: #64748b;
+                --cyan-glow: #06b6d4;
+                /* 第一部：人理冷蓝色 */
+                --amber-glow: #f59e0b;
+                /* 第二部：空想树断绝橙 */
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+
+            body {
+                background-color: var(--bg-color);
+                color: var(--text-primary);
+                font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+                min-height: 100vh;
+                -webkit-font-smoothing: antialiased;
+                background-image:
+                    linear-gradient(to right, rgba(255, 255, 255, 0.008) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.008) 1px, transparent 1px);
+                background-size: 60px 60px;
+            }
+
+            .container {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 3rem 1.5rem;
+                position: relative;
+                z-index: 10;
+            }
+
+            /* --- 顶部控制台大标题 --- */
+            .header {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                padding-bottom: 2rem;
+                margin-bottom: 3rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+            }
+
+            .header-title p {
+                font-family: SFMono-Regular, Consolas, monospace;
+                font-size: 0.75rem;
+                letter-spacing: 0.3em;
+                color: var(--cyan-glow);
+                text-transform: uppercase;
+                margin-bottom: 0.5rem;
+            }
+
+            .header-title h1 {
+                font-size: 1.8rem;
+                font-weight: 200;
+                letter-spacing: 0.05em;
+            }
+
+            .header-status {
+                font-family: SFMono-Regular, Consolas, monospace;
+                font-size: 0.75rem;
+                color: var(--text-muted);
+                text-align: right;
+                line-height: 1.6;
+            }
+
+            .header-status span {
+                color: var(--cyan-glow);
+                animation: pulse 2s infinite;
+            }
+
+            /* --- 章节分隔横幅 --- */
+            .section-divider {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                margin: 3.5rem 0 2.5rem;
+                font-family: SFMono-Regular, Consolas, monospace;
+                font-size: 1rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+            }
+
+            .section-divider::after {
+                content: "";
+                flex: 1;
+                height: 1px;
+            }
+
+            .section-divider.part-one {
+                color: var(--cyan-glow);
+            }
+
+            .section-divider.part-one::after {
+                background: linear-gradient(90deg, var(--cyan-glow), transparent);
+            }
+
+            .section-divider.part-two {
+                color: var(--amber-glow);
+            }
+
+            .section-divider.part-two::after {
+                background: linear-gradient(90deg, var(--amber-glow), transparent);
+            }
+
+            /* --- 垂直列表布局 --- */
+            .report-list {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            /* --- 独占一行的宽卡片主体 --- */
+            .row-card {
+                background: var(--card-bg);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 2rem;
+                position: relative;
+                overflow: hidden;
+                cursor: default;
+                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                    border-color 0.4s ease,
+                    box-shadow 0.4s ease;
+            }
+
+            .row-card:hover {
+                transform: translateY(-2px);
+                border-color: var(--border-hover);
+                box-shadow: 0 15px 40px rgba(6, 182, 212, 0.03);
+            }
+
+            .row-card.part-one-card:hover {
+                border-color: rgba(6, 182, 212, 0.35);
+                box-shadow: 0 15px 40px rgba(6, 182, 212, 0.04);
+            }
+
+            .row-card.part-two-card:hover {
+                border-color: rgba(245, 158, 11, 0.35);
+                box-shadow: 0 15px 40px rgba(245, 158, 11, 0.04);
+            }
+
+            /* Apple 悬停流光线 */
+            .row-card::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.02), transparent);
+                transform: translateX(-100%);
+                z-index: 2;
+            }
+
+            .row-card:hover::after {
+                animation: scan 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            }
+
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 1.25rem;
+            }
+
+            .meta-left {
+                font-family: SFMono-Regular, Consolas, monospace;
+                font-size: 0.7rem;
+                color: var(--cyan-glow);
+                letter-spacing: 0.1em;
+            }
+
+            .part-two-card .meta-left {
+                color: var(--amber-glow);
+            }
+
+            .badge {
+                font-family: SFMono-Regular, Consolas, monospace;
+                font-size: 0.65rem;
+                padding: 2px 8px;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                border: 1px solid rgba(16, 185, 129, 0.2);
+                background: rgba(16, 185, 129, 0.04);
+                color: var(--amber-glow);
+            }
+
+            .badge-dot {
+                width: 4px;
+                height: 4px;
+                background-color: currentColor;
+                border-radius: 50%;
+            }
+
+            .part-one-card .badge {
+                color: var(--text-primary);
+                border-color: rgba(6, 182, 212, 0.2);
+                background: rgba(6, 182, 212, 0.04);
+            }
+
+            .part-two-card .badge {
+                color: var(--amber-glow);
+                border-color: rgba(245, 158, 11, 0.2);
+                background: rgba(245, 158, 11, 0.04);
+            }
+
+            .card-main-title {
+                font-size: 1.35rem;
+                font-weight: 400;
+                letter-spacing: 0.02em;
+                margin-bottom: 0.25rem;
+                transition: color 0.3s ease;
+            }
+
+            .part-one-card:hover .card-main-title {
+                color: var(--cyan-glow);
+            }
+
+            .part-two-card:hover .card-main-title {
+                color: var(--amber-glow);
+            }
+
+            .card-date {
+                font-family: SFMono-Regular, Consolas, monospace;
+                font-size: 0.75rem;
+                color: var(--text-muted);
+                margin-bottom: 1.5rem;
+            }
+
+            /* 五列参数面板 */
+            .parameter-panel {
+                display: grid;
+                grid-template-columns: 1fr 1.2fr 1.5fr 1.2fr 2fr;
+                gap: 1.5rem;
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid rgba(255, 255, 255, 0.03);
+                border-radius: 8px;
+                padding: 1rem 1.25rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .param-group {
+                font-family: SFMono-Regular, Consolas, monospace;
+            }
+
+            .param-label {
+                font-size: 0.6rem;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                margin-bottom: 0.25rem;
+                letter-spacing: 0.05em;
+            }
+
+            .param-value {
+                font-size: 0.8rem;
+                color: var(--text-secondary);
+            }
+
+            .param-value.highlight {
+                color: var(--text-primary);
+                font-weight: 500;
+            }
+
+            .ellipsis {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: block;
+            }
+
+            .summary-section {
+                border-top: 1px dashed rgba(255, 255, 255, 0.06);
+                padding-top: 1.25rem;
+            }
+
+            .summary-title {
+                font-size: 0.75rem;
+                color: var(--text-muted);
+                margin-bottom: 0.5rem;
+                font-weight: 500;
+                letter-spacing: 0.05em;
+            }
+
+            .summary-text {
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+                line-height: 1.6;
+                text-align: justify;
+            }
+
+            @keyframes scan {
+                0% {
+                    transform: translateX(-100%);
+                }
+
+                100% {
+                    transform: translateX(100%);
+                }
+            }
+
+            @keyframes pulse {
+
+                0%,
+                100% {
+                    opacity: 1;
+                }
+
+                50% {
+                    opacity: 0.3;
+                }
+            }
+
+            @media (max-width: 850px) {
+                .parameter-panel {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+
+            <div class="container">
+            <header class="header">
+                <div class="header-title">
+                    <p>Chaldea Grand Order Terminal</p>
+                    <h1>人理奠基档案 · 全记录</h1>
+                </div>
+                <div class="header-status">
+                    SYSTEM: TRISMEGISTUS II // CHALDEA BASE<br>
+                    人理定基状态: <span>SECURED // 稳定</span>
+                </div>
+            </header>
+
+            <!-- =================================================== -->
+            <!-- PART I — 特异点修正全志 -->
+            <!-- =================================================== -->
+            <div class="section-divider part-one">
+                <span>✦ 冠位指定 · 七大特异点修正全志</span>
+            </div>
+
+            <main class="report-list">
+
+                <!-- First Singularity -->
+                <div class="row-card part-one-card">
+                    <div class="card-header">
+                        <div class="meta-left">LEYSHIFT COORD: 47°02'N 2°23'E // 灵子转移成功</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>CORRECTED //
+                                已修正</span></div>
+                    </div>
+                    <h2 class="card-main-title">邪龙百年战争 · 奥尔良</h2>
+                    <div class="card-date">时空节点：A.D. 1431 // 人理定基值：C++</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">特异点编号</div>
+                            <div class="param-value highlight">First Singularity</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">主要威胁级别</div>
+                            <div class="param-value">Rank C</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">核心异变源</div>
+                            <div class="param-value highlight" style="color: var(--cyan-glow);">龙之魔女 (吉尔·德·雷)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">圣杯持有者</div>
+                            <div class="param-value">贞德[Alter]</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">关键协力英灵</div>
+                            <div class="param-value ellipsis">贞德、玛丽 · 安托瓦内特</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">【特异点观测报告 / CHALDEA MISSION LOG】</div>
+                        <p class="summary-text">
+                            百年战争时期的法兰西。因吉尔·德·雷利用圣杯对泛人类史进行报复，复活了虚构的"黑化贞德"，并召唤了大量双足飞龙对国土进行毁灭性屠杀。迦勒底遭遇了极其严酷的巨龙遭遇战。在正统圣女贞德、元帅吉尔（少年）以及法兰西本土英灵的协助下，成功突破邪龙军团。最终击败黑贞德，回收圣杯，法兰西人理定基回归正轨。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Second Singularity -->
+                <div class="row-card part-one-card">
+                    <div class="card-header">
+                        <div class="meta-left">LEYSHIFT COORD: 41°54'N 12°29'E // 灵子转移成功</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>CORRECTED //
+                                已修正</span></div>
+                    </div>
+                    <h2 class="card-main-title">永续疯狂帝国 · 七丘之城</h2>
+                    <div class="card-date">时空节点：A.D. 0060 // 人理定基值：B+</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">特异点编号</div>
+                            <div class="param-value highlight">Second Singularity</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">主要威胁级别</div>
+                            <div class="param-value">Rank B</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">核心异变源</div>
+                            <div class="param-value highlight" style="color: var(--cyan-glow);">联合罗马帝国 (雷夫 · 化勒)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">圣杯持有者</div>
+                            <div class="param-value">阿蒂拉 (被雷夫强行召唤)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">关键协力英灵</div>
+                            <div class="param-value ellipsis">尼禄 · 克劳狄乌斯、布狄卡</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">【特异点观测报告 / CHALDEA MISSION LOG】</div>
+                        <p class="summary-text">
+                            罗马帝国鼎盛时期。魔神柱雷夫携圣杯介入，挑动已故的历代罗马先帝（凯撒、卡利古拉、罗穆路斯等）建立"联合帝国"，意图摧毁尼禄统治的现世罗马。迦勒底以客将身份加入尼禄治下的罗马正规军，御驾亲征。在清剿多方叛军、击溃魔神柱佛劳洛斯后，迎击被圣杯强行召唤的"文明毁灭者"阿蒂拉。最终顺利保障了罗马帝国的延续。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Third Singularity -->
+                <div class="row-card part-one-card">
+                    <div class="card-header">
+                        <div class="meta-left">LEYSHIFT COORD: 25°00'N 45°00'W // 灵子转移成功</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>CORRECTED //
+                                已修正</span></div>
+                    </div>
+                    <h2 class="card-main-title">封锁终局四海 · 俄刻阿诺斯</h2>
+                    <div class="card-date">时空节点：A.D. 1573 // 人理定基值：A</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">特异点编号</div>
+                            <div class="param-value highlight">Third Singularity</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">主要威胁级别</div>
+                            <div class="param-value">Rank A</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">核心异变源</div>
+                            <div class="param-value highlight" style="color: var(--cyan-glow);">神代魔女的美食大计
+                                (黑胡子/美狄亚[Lily])</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">圣杯持有者</div>
+                            <div class="param-value">爱德华 · 蒂奇 → 赫克托耳</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">关键协力英灵</div>
+                            <div class="param-value ellipsis">弗朗西斯 · 德雷克、阿斯托尔福</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">【特异点观测报告 / CHALDEA MISSION LOG】</div>
+                        <p class="summary-text">
+                            大航海时代的无尽汪洋。由于圣杯引发的时空扭曲，该海域演变成了神代神话与历史海盗杂糅的"断绝之海"。狂热的海盗王黑胡子夺取圣杯企图扩充后宫，实则背后受到美狄亚Lily与魔神柱的反向利用，意图献祭希腊神话中的巨神赫拉克勒斯。迦勒底登上了星之开拓者德雷克船长的"黄金鹿号"，展开了激烈的接舷海战。最终击破神代魔物，平定大洋。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Fourth Singularity -->
+                <div class="row-card part-one-card">
+                    <div class="card-header">
+                        <div class="meta-left">LEYSHIFT COORD: 51°30'N 0°07'W // 灵子转移成功</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>CORRECTED //
+                                已修正</span></div>
+                    </div>
+                    <h2 class="card-main-title">死界魔雾都市 · 伦敦</h2>
+                    <div class="card-date">时空节点：A.D. 1888 // 人理定基值：A-</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">特异点编号</div>
+                            <div class="param-value highlight">Fourth Singularity</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">主要威胁级别</div>
+                            <div class="param-value">Rank A-</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">核心异变源</div>
+                            <div class="param-value highlight" style="color: var(--cyan-glow);">魔雾计划 (巴贝奇/P夫人/祖尔)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">圣杯持有者</div>
+                            <div class="param-value">特斯拉 (作为魔雾核心被唤醒)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">关键协力英灵</div>
+                            <div class="param-value ellipsis">莫德雷德、莫里亚蒂(幕后) / 莫扎特</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">【特异点观测报告 / CHALDEA MISSION LOG】</div>
+                        <p class="summary-text">
+                            工业革命时期的雾都伦敦。全城被一种能够隔绝阳光、腐蚀生物肉体并阻断魔术观测的"死界魔雾"所笼罩，其真面目是巨大的人工魔术触媒。迦勒底在叛逆骑士莫德雷德的带领下深入地底蒸汽迷宫，逐个击破了幕后操纵的苏格兰场与魔术师。战役末尾，魔术王盖提亚（以所罗门外貌）首次在人前现身，展示了令人绝望的压倒性神击。此役惊险胜出，人理防线在迷雾中勉强维系。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Fifth Singularity -->
+                <div class="row-card part-one-card">
+                    <div class="card-header">
+                        <div class="meta-left">LEYSHIFT COORD: 38°53'N 77°01'W // 灵子转移成功</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>CORRECTED //
+                                已修正</span></div>
+                    </div>
+                    <h2 class="card-main-title">北美神话大战 · 合众国合战</h2>
+                    <div class="card-date">时空节点：A.D. 1783 // 人理定基值：A+</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">特异点编号</div>
+                            <div class="param-value highlight">Fifth Singularity</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">主要威胁级别</div>
+                            <div class="param-value">Rank A+</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">核心异变源</div>
+                            <div class="param-value highlight" style="color: var(--cyan-glow);">凯尔特狂暴军团 (梅芙/库·丘林[Alter])
+                            </div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">圣杯持有者</div>
+                            <div class="param-value">狂王库 · 丘林</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">关键协力英灵</div>
+                            <div class="param-value ellipsis">南丁格尔、罗摩、迦尔纳</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">【特异点观测报告 / CHALDEA MISSION LOG】</div>
+                        <p class="summary-text">
+                            独立战争时期的北美大陆。因女王梅芙向圣杯许愿，召唤出了毫无理性的凯尔特大军，由绝对杀戮机器"狂王库丘林"统领，从东海岸一路血洗美利坚。泛人类史本土英灵（发明家、总统等）组成了西部合众国军拼死抵抗。迦勒底携手誓死救人的狂修士南丁格尔，跨越万里山河。经历了解除罗摩诅咒、迦尔纳决战阿周那等宏大史诗，最终粉碎狂王，将北美历史交还给人类自己。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Sixth Singularity -->
+                <div class="row-card part-one-card">
+                    <div class="card-header">
+                        <div class="meta-left">LEYSHIFT COORD: 31°47'N 35°13'E // 灵子转移成功</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>CORRECTED //
+                                已修正</span></div>
+                    </div>
+                    <h2 class="card-main-title">神圣圆桌领域 · 卡美洛</h2>
+                    <div class="card-date">时空节点：A.D. 1273 // 人理定基值：EX</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">特异点编号</div>
+                            <div class="param-value highlight">Sixth Singularity</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">主要威胁级别</div>
+                            <div class="param-value">Rank EX</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">核心异变源</div>
+                            <div class="param-value highlight" style="color: var(--cyan-glow);">圣裁狮子王 (圆桌骑士团)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">圣杯持有者</div>
+                            <div class="param-value">狮子王 (手持圣枪伦戈米尼亚德)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">关键协力英灵</div>
+                            <div class="param-value ellipsis">贝德维尔、奥兹曼迪亚斯、山之翁</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">【特异点观测报告 / CHALDEA MISSION LOG】</div>
+                        <p class="summary-text">
+                            遭遇性质发生根本异变的极端特异点。原本应是十字军东征的沙场，却因手持圣枪、化身为神灵的"狮子王"降临而沦为焦土。她召唤出圆桌骑士团，建立纯白之城卡美洛，无情地屠杀难民，企图将人类的灵魂做成标本封存在圣枪中以躲避人理烧却。迦勒底联合山之翁、埃及法老王以及断臂的独臂骑士贝德维尔组成联军。在星之圣剑的真正因缘解开后，贝德维尔还剑于王，圣枪的制裁终于平息。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Seventh Singularity -->
+                <div class="row-card part-one-card">
+                    <div class="card-header">
+                        <div class="meta-left">LEYSHIFT COORD: 32°32'N 44°25'E // 灵子转移成功</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>CORRECTED //
+                                已修正</span></div>
+                    </div>
+                    <h2 class="card-main-title">绝对魔兽战线 · 巴比伦尼亚</h2>
+                    <div class="card-date">时空节点：B.C. 2655 // 人理定基值：EX</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">特异点编号</div>
+                            <div class="param-value highlight">Seventh Singularity</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">主要威胁级别</div>
+                            <div class="param-value">Rank EX</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">核心异变源</div>
+                            <div class="param-value highlight" style="color: var(--cyan-glow);">三女神同盟 / 创世母神 (提亚玛特)
+                            </div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">圣杯持有者</div>
+                            <div class="param-value">金固 (伪恩奇都) // 盖提亚投入</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">关键协力英灵</div>
+                            <div class="param-value ellipsis">吉尔伽美什[Caster]、梅林、艾蕾</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">【特异点观测报告 / CHALDEA MISSION LOG】</div>
+                        <p class="summary-text">
+                            人类最古老的苏美尔神代。魔术王盖提亚投下圣杯，试图从文明的源头彻底抹杀人类史。贤王吉尔伽美什放弃了不老药，率领乌鲁克全城军民修筑了"绝对魔兽战线"，苦撑数月。随着三女神同盟被迦勒底逐个击破，真正代表星之毁灭的原始母神"提亚玛特"黑泥化觉醒，拉赫穆大军淹没大地。最终，冥界之中，冠位暗杀者"山之翁"劈出赋予死亡概念的一击，吉尔伽美什以英雄王姿态全力解放王律键，神代自此彻底终结，通往终局特异点之门正式开启。
+                        </p>
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- =================================================== -->
+            <!-- PART II — 异闻带剪定全志 -->
+            <!-- =================================================== -->
+            <div class="section-divider part-two">
+                <span>✦ 宇宙清空 · 七大异闻事象剪定全志</span>
+            </div>
+
+            <main class="report-list">
+
+                <!-- Lostbelt 1 -->
+                <div class="row-card part-two-card">
+                    <div class="card-header">
+                        <div class="meta-left">DETECTION COORD: 62°24'N 41°10'E // 虚数路径锁定</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>PRUNED // 已剪定</span>
+                        </div>
+                    </div>
+                    <h2 class="card-main-title">永久冻土帝国 · 阿纳斯塔西娅</h2>
+                    <div class="card-date">人理异闻区划：俄罗斯异闻带 // 历史分歧节点：A.D. 1570</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">异闻编号</div>
+                            <div class="param-value highlight">Lostbelt No.1</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">人类史崩溃深度</div>
+                            <div class="param-value">D</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">空想树 (真名)</div>
+                            <div class="param-value highlight" style="color: var(--amber-glow);">Mayall (麦亚尔)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">隐匿者 (Crypter)</div>
+                            <div class="param-value">卡多克 · 泽姆露普斯</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">异闻带之王</div>
+                            <div class="param-value ellipsis">雷帝 · 伊凡</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">【战术切除战果报告 / MISSION LOG】</div>
+                        <p class="summary-text">
+                            遭遇因泛人类史极寒冻结而诞生走向分歧的"雅嘎"世界。由于极端低温，旧人类肉体被彻底颠覆改造成魔兽。战术核心在于解除对异闻带之王"雷帝"的绝对防御。在叛逆军同盟与萨列里、阿维斯布隆等英灵的协助下，成功唤醒并击破暴走状态的雷帝。最终，使用影子边境跨越冰原，全面切除空想树麦亚尔，俄罗斯异闻带事象归无。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Lostbelt 2 -->
+                <div class="row-card part-two-card">
+                    <div class="card-header">
+                        <div class="meta-left">DETECTION COORD: 64°50'N 18°20'W // 虚数路径锁定</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>PRUNED // 已剪定</span>
+                        </div>
+                    </div>
+                    <h2 class="card-main-title">无间冰焰世纪 · 诸神黄昏</h2>
+                    <div class="card-date">人理异闻区划：北欧异闻带 // 历史分歧节点：B.C. 1000</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">异闻编号</div>
+                            <div class="param-value highlight">Lostbelt No.2</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">人类史崩溃深度</div>
+                            <div class="param-value">B+</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">空想树 (真名)</div>
+                            <div class="param-value highlight" style="color: var(--amber-glow);">Sombrero (宽边帽)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">隐匿者 (Crypter)</div>
+                            <div class="param-value">奥菲莉娅 · 法姆索罗涅</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">异闻带之王</div>
+                            <div class="param-value ellipsis">斯卡哈 · 斯卡蒂</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">【战术切除战果报告 / MISSION LOG】</div>
+                        <p class="summary-text">
+                            遭遇北欧诸神黄昏战役（Ragnarok）中因主神奥丁战败分歧而形成的停滞世界。全人类生命体被锁死在极小圈层内，在巨人族的威胁与北欧女王斯卡蒂慈悲且残酷的法则下苟延残喘。迦勒底在拿破仑、布伦希尔德等英灵的决死突袭下，击破毁灭化身苏鲁特（Surtr）。在与北欧之王迎来理念交锋的终局之战后，挥泪砍伐空想树宽边帽，宣告北欧历史闭幕。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Lostbelt 3 -->
+                <div class="row-card part-two-card">
+                    <div class="card-header">
+                        <div class="meta-left">DETECTION COORD: 34°12'N 108°54'E // 虚数路径锁定</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>PRUNED // 已剪定</span>
+                        </div>
+                    </div>
+                    <h2 class="card-main-title">人智统合真国 · SIN</h2>
+                    <div class="card-date">人理异闻区划：中国异闻带 // 历史分歧节点：B.C. 210</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">异闻编号</div>
+                            <div class="param-value highlight">Lostbelt No.3</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">人类史崩溃深度</div>
+                            <div class="param-value">E</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">空想树 (真名)</div>
+                            <div class="param-value highlight" style="color: var(--amber-glow);">Mayall (原为苗木/已被始皇帝活体解析)
+                            </div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">隐匿者 (Crypter)</div>
+                            <div class="param-value">芥雏子 (虞美人)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">异闻带之王</div>
+                            <div class="param-value ellipsis">始皇帝 · 嬴政</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">解密报告 / DETAILED ANALYSIS</div>
+                        <p class="summary-text">
+                            遭遇秦始皇寻得长生不老药、实现天下一统并高度机械化的世界。由于绝对的绝对统治与中央集权，真国消除了战争与饥荒，但也抹杀了平民求知、文学与文明的迭代可能。始皇帝以全真机械圣躯坐镇轨道阿房宫，并对空想树进行了反向解析与压制。面临芥雏子的叛变暴走，迦勒底在荆轲、韩信等英灵的因缘交织下突入咸阳。最终在战术决斗中赢得始皇帝器量认同，共同迎击空想树异变，剪定真国。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Lostbelt 4 -->
+                <div class="row-card part-two-card">
+                    <div class="card-header">
+                        <div class="meta-left">DETECTION COORD: 22°34'N 88°22'E // 虚数路径锁定</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>PRUNED // 已剪定</span>
+                        </div>
+                    </div>
+                    <h2 class="card-main-title">创世灭界轮回 · 由伽 · 刹多罗</h2>
+                    <div class="card-date">人理异闻区划：印度异闻带 // 历史分歧节点：A.D. 1190?</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">异闻编号</div>
+                            <div class="param-value highlight">Lostbelt No.4</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">人类史崩溃深度</div>
+                            <div class="param-value">A</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">空想树 (真名)</div>
+                            <div class="param-value highlight" style="color: var(--amber-glow);">Spiral (螺旋)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">隐匿者 (Crypter)</div>
+                            <div class="param-value">斯堪的纳维亚 · 佩佩隆奇诺</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">异闻带之王</div>
+                            <div class="param-value ellipsis">阿周那 · Alter</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">解密报告 / DETAILED ANALYSIS</div>
+                        <p class="summary-text">
+                            遭遇吞噬了印度神话全神性、沦为纯粹"不改恶神"的狂周那所统领的创世世界。世界在极短周期内不断陷入"毁灭与再生"的死循环，任何带有微小瑕疵的生命体在轮回的末尾都会被粗暴抹消，导致文明严重萎缩。迦勒底联合隐匿者佩佩，在神之神王迦尔纳、迦内什等英灵的共同协助下，于创世祭坛上剥离狂周那的神性锚点。最终将其击落，伐倒空想树螺旋，解放无休止的轮回痛苦。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Lostbelt 5 -->
+                <div class="row-card part-two-card">
+                    <div class="card-header">
+                        <div class="meta-left">DETECTION COORD: 37°58'N 23°43'E // 虚数路径锁定</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>PRUNED // 已剪定</span>
+                        </div>
+                    </div>
+                    <h2 class="card-main-title">神代巨神海洋 · 亚特兰蒂斯 / 奥林匹斯</h2>
+                    <div class="card-date">人理异闻区划：希腊异闻带 // 历史分歧节点：B.C. 12000</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">异闻编号</div>
+                            <div class="param-value highlight">Lostbelt No.5</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">人类史崩溃深度</div>
+                            <div class="param-value">A+</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">空想树 (真名)</div>
+                            <div class="param-value highlight" style="color: var(--amber-glow);">Magellan (麦哲伦)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">隐匿者 (Crypter)</div>
+                            <div class="param-value">基尔什塔利亚 · 沃戴姆</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">异闻带之王</div>
+                            <div class="param-value ellipsis">全能神 · 宙斯</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">解密报告 / DETAILED ANALYSIS</div>
+                        <p class="summary-text">
+                            遭遇一万二千年前大迁徙中未曾损毁、完全由宇宙机械机神统领的希腊神代世界。上层奥林匹斯都市拥有不可思议的超高度永生科技。隐匿者领袖沃戴姆以此为大本营，企图利用空想树将全人类提升为神。迦勒底经历了极度惨烈的海战与空降奇袭。依靠破神同盟（俄里翁、超人熊等英灵）付出决死代价，使用仿制黑枪（Black
+                            Barrel）击碎波塞冬、神祖奎里努斯协助跨越神门，最终击败全能宙斯。沃戴姆在遭受异星神背叛后，燃尽最后生命掩护迦勒底，希腊神界崩落。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Lostbelt 6 -->
+                <div class="row-card part-two-card">
+                    <div class="card-header">
+                        <div class="meta-left">DETECTION COORD: 54°00'N 2°00'W // 虚数路径锁定</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>PRUNED // 已剪定</span>
+                        </div>
+                    </div>
+                    <h2 class="card-main-title">妖精圆桌领域 · 阿瓦隆 · 勒·菲</h2>
+                    <div class="card-date">人理异闻区划：不列颠妖精国 // 历史分歧节点：B.C. 14000</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">异闻编号</div>
+                            <div class="param-value highlight">Lostbelt No.6</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">人类史崩溃深度</div>
+                            <div class="param-value">EX</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">空想树 (真名)</div>
+                            <div class="param-value highlight" style="color: var(--amber-glow);">Seyfert (施洗 /
+                                已被摩根吸干转化为魔力源)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">隐匿者 (Crypter)</div>
+                            <div class="param-value">贝里尔 · 伽特</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">异闻带之王</div>
+                            <div class="param-value ellipsis">女王 · 摩根</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">解密报告 / DETAILED ANALYSIS</div>
+                        <p class="summary-text">
+                            遭遇因六罪妖精怠惰、未曾锻造圣剑导致世界白纸化分歧的极端异事象。异闻带本身并不依赖空想树，而是靠女王摩根以极度冷酷的"水镜"魔术吸干树之魔力维持的妖精国度。内政充斥着欺骗、恶意、宿命与周期性的"大灾厄"。迦勒底与预言之子阿尔托莉雅·卡斯特结伴，历经数个氏族的背叛与绝望。虽女王摩根惨遭算计身亡，但毁灭级的大灾厄"奈落之虫"在妖精国内地深处彻底爆发。最终，预言之子燃尽自身锻造真正的圣剑击穿星之终焉，在最悲壮的泪水中将妖精不列颠彻底剪定。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Lostbelt 7 -->
+                <div class="row-card part-two-card">
+                    <div class="card-header">
+                        <div class="meta-left">DETECTION COORD: 0°00'N 60°00'W // 虚数路径锁定</div>
+                        <div class="meta-right"><span class="badge"><span class="badge-dot"></span>PRUNED // 已剪定</span>
+                        </div>
+                    </div>
+                    <h2 class="card-main-title">黄金树海纪行 · 纳维 · 灵林</h2>
+                    <div class="card-date">人理异闻区划：南美异闻带 // 历史分歧节点：B.C. 6000000</div>
+                    <div class="parameter-panel">
+                        <div class="param-group">
+                            <div class="param-label">异闻编号</div>
+                            <div class="param-value highlight">Lostbelt No.7</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">人类史崩溃深度</div>
+                            <div class="param-value">ORTE (无法测定)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">空想树 (真名)</div>
+                            <div class="param-value highlight" style="color: var(--amber-glow);">Quasar (类星体)</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">隐匿者 (Crypter)</div>
+                            <div class="param-value">戴比特 · 塞姆 · 沃伊德</div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">异闻带之王</div>
+                            <div class="param-value ellipsis">库库尔坎 / 烟雾镜</div>
+                        </div>
+                    </div>
+                    <div class="summary-section">
+                        <div class="summary-title">解密报告 / DETAILED ANALYSIS</div>
+                        <p class="summary-text">
+                            遭遇陨石未曾撞击地球、恐龙（迪诺斯）演化出高度哲学文明、并与古老迈雅神性共存的地下太阳世界（埃尔多拉多）。此处的终极威胁并非异闻之王，而是沉睡在最深处的宇宙终结生物——大蜘蛛
+                            ORT。隐匿者戴比特意图唤醒 ORT 毁灭全宇宙以纠正泛人类史的残忍，迦勒底在冥界裁判与各种神性博弈中前行。最终爆发了惨烈至极的"ORT
+                            连战"，英灵召唤系统超负荷运转。在击破星之终端库库尔坎与大蜘蛛的究极构体后，全面拔除空想树类星体，完成了第一部人理收束的终局反攻。
+                        </p>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+    </body>
+
+</html>

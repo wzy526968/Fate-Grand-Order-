@@ -1,0 +1,26 @@
+{
+  "name": "fate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vitejs/plugin-vue": "^6.0.7",
+    "axios": "^1.18.0",
+    "echarts": "^6.1.0",
+    "echarts-gl": "^2.1.0",
+    "pinia": "^3.0.4",
+    "three": "^0.184.0",
+    "topojson-client": "^3.1.0",
+    "vite": "^8.0.16",
+    "vue": "^3.5.38",
+    "vue-router": "^4.6.4"
+  }
+}

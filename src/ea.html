@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Three.js 完美特异点地球（顺畅旋转版）</title>
+        <style>
+            body,
+            html {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                background-color: #050814;
+            }
+
+            #container {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+
+            /* 特异点文字标签样式 */
+            .singularity-label {
+                color: #7fceff;
+                font-family: 'Courier New', sans-serif;
+                font-size: 11px;
+                font-weight: bold;
+                padding: 4px 8px;
+                background: rgba(5, 16, 40, 0.8);
+                border: 1px solid #2663b5;
+                border-radius: 4px;
+                white-space: nowrap;
+                text-shadow: 0 0 5px #2663b5;
+                box-shadow: 0 0 8px rgba(38, 99, 181, 0.4);
+                pointer-events: none;
+                /* 允许鼠标事件穿透单个标签 */
+                user-select: none;
+                transition: opacity 0.2s ease;
+            }
+
+            .singularity-label::before {
+                content: '';
+                display: inline-block;
+                width: 6px;
+                height: 6px;
+                background-color: #ff3b30;
+                box-shadow: 0 0 8px #ff3b30;
+                border-radius: 50%;
+                margin-right: 6px;
+                vertical-align: middle;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="container"></div>
+
+        <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+
+        <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+        <script type="module">
+            import * as THREE from 'three';
+            import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+            import { Line2 } from 'three/addons/lines/Line2.js';
+            import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+            import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+            import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+            const container = document.getElementById('container');
+
+            // --- 1. 初始化场景、相机、渲染器 ---
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            // 设定初始视角 (约 30°N, -109°W)
+            const startLat = 30.0;
+            const startLon = -109.0;
+            const cameraDistance = 2.8;
+            const phi = (90 - startLat) * Math.PI / 180;
+            const theta = startLon * Math.PI / 180;
+            camera.position.set(
+                cameraDistance * Math.sin(phi) * Math.cos(theta),
+                cameraDistance * Math.cos(phi),
+                cameraDistance * Math.sin(phi) * Math.sin(theta)
+            );
+
+            // WebGL 主渲染器
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // CSS 2D 文字渲染器
+            const labelRenderer = new CSS2DRenderer();
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.domElement.style.position = 'absolute';
+            labelRenderer.domElement.style.top = '0px';
+            // 【关键修复一】核心：让整个文字渲染层不响应任何鼠标事件，把点击完全“漏”给底层的3D画布
+            labelRenderer.domElement.style.pointerEvents = 'none';
+            container.appendChild(labelRenderer.domElement);
+
+            // --- 2. 添加控制器 (【关键修复二】：绑回底层真实的 WebGL 画布) ---
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.autoRotate = false;
+            controls.enableZoom = true;
+
+            // --- 3. 创建深蓝色地球 (海洋) ---
+            const globeRadius = 1;
+            const globeGeometry = new THREE.SphereGeometry(globeRadius, 64, 64);
+            const globeMaterial = new THREE.MeshPhongMaterial({
+                color: 0x0a2f6a,
+                emissive: 0x051840,
+                shininess: 10,
+                specular: new THREE.Color(0x1a5cff),
+            });
+            const globe = new THREE.Mesh(globeGeometry, globeMaterial);
+            scene.add(globe);
+
+            // --- 4. 星空背景 ---
+            const starsGeometry = new THREE.BufferGeometry();
+            const starsCount = 2000;
+            const starsPositions = new Float32Array(starsCount * 3);
+            for (let i = 0; i < starsCount * 3; i += 3) {
+                const r = 50 + Math.random() * 50;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos((Math.random() * 2) - 1);
+                starsPositions[i] = r * Math.sin(phi) * Math.cos(theta);
+                starsPositions[i + 1] = r * Math.sin(phi) * Math.sin(theta);
+                starsPositions[i + 2] = r * Math.cos(phi);
+            }
+            starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
+            const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.15, transparent: true });
+            const stars = new THREE.Points(starsGeometry, starsMaterial);
+            scene.add(stars);
+
+            // --- 5. 加载地理数据并绘制原本完美的粗轮廓线 ---
+            const geoJsonUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
+
+            const lineMaterial = new LineMaterial({
+                color: 0x2663b5,
+                linewidth: 2.2,
+                transparent: true,
+                opacity: 0.6,
+                resolution: new THREE.Vector2(window.innerWidth, window.innerHeight)
+            });
+
+            fetch(geoJsonUrl)
+                .then(response => response.json())
+                .then(topoData => {
+                    const geoData = topojson.feature(topoData, topoData.objects.countries);
+                    geoData.features.forEach(feature => {
+                        const geometry = feature.geometry;
+                        if (geometry.type === 'Polygon') {
+                            drawThickPolygon(geometry.coordinates);
+                        } else if (geometry.type === 'MultiPolygon') {
+                            geometry.coordinates.forEach(polygon => drawThickPolygon(polygon));
+                        }
+                    });
+                })
+                .catch(error => console.error('加载地理数据失败:', error));
+
+            function drawThickPolygon(coordinates) {
+                coordinates.forEach(ring => {
+                    if (ring.length < 5) return;
+
+                    const positions = [];
+                    ring.forEach(coord => {
+                        const lon = coord[0];
+                        const lat = coord[1];
+                        const vec = latLonToVector3(lat, lon, globeRadius * 1.006);
+                        positions.push(vec.x, vec.y, vec.z);
+                    });
+
+                    const lineGeo = new LineGeometry();
+                    lineGeo.setPositions(positions);
+
+                    const line = new Line2(lineGeo, lineMaterial);
+                    line.computeLineDistances();
+                    scene.add(line);
+                });
+            }
+
+            // --- 6. 创建并挂载特异点文字标签 ---
+            const singularities = [
+                { name: "特异点F: 冬木 (A.D.2004)", lat: 34.44, lon: 135.24 },
+                { name: "第一特异点: 奥尔良 (A.D.1431)", lat: 47.90, lon: 1.90 },
+                { name: "第二特异点: 七丘之城 (A.D.0060)", lat: 41.90, lon: 12.49 },
+                { name: "第三特异点: 俄刻阿诺斯 (A.D.1573)", lat: 21.00, lon: -70.00 },
+                { name: "第四特异点: 死界魔雾都市 (A.D.1888)", lat: 51.50, lon: -0.12 },
+                { name: "第五特异点: 北美神话大战 (A.D.1783)", lat: 38.90, lon: -77.03 }
+            ];
+
+            const labelObjects = [];
+
+            singularities.forEach(sig => {
+                const div = document.createElement('div');
+                div.className = 'singularity-label';
+                div.textContent = sig.name;
+
+                const labelObject = new CSS2DObject(div);
+                const pos = latLonToVector3(sig.lat, sig.lon, globeRadius);
+                labelObject.position.copy(pos);
+
+                labelObjects.push({
+                    element: div,
+                    localPositions: pos.clone()
+                });
+
+                globe.add(labelObject);
+            });
+
+            function latLonToVector3(lat, lon, radius) {
+                const phi = (90 - lat) * Math.PI / 180;
+                const theta = (lon + 180) * Math.PI / 180;
+                return new THREE.Vector3(
+                    -radius * Math.sin(phi) * Math.sin(theta),
+                    radius * Math.cos(phi),
+                    radius * Math.sin(phi) * Math.cos(theta)
+                );
+            }
+
+            // --- 7. 灯光系统 ---
+            const ambientLight = new THREE.AmbientLight(0x404060);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
+            const backLight = new THREE.DirectionalLight(0x1a5cff, 0.5);
+            backLight.position.set(-5, -3, -5);
+            scene.add(backLight);
+
+            // 创建射线发射器，用于背面隐藏检测
+            const raycaster = new THREE.Raycaster();
+
+            // --- 8. 动画与自适应 ---
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+
+                // 实时检查文字是否转到了地球背面
+                labelObjects.forEach(label => {
+                    const wp = label.localPositions.clone().applyMatrix4(globe.matrixWorld);
+                    const dir = wp.clone().sub(camera.position).normalize();
+                    raycaster.set(camera.position, dir);
+
+                    const intersects = raycaster.intersectObject(globe);
+
+                    if (intersects.length > 0) {
+                        const hitDistance = intersects[0].distance;
+                        const labelDistance = camera.position.distanceTo(wp);
+
+                        if (hitDistance < labelDistance - 0.005) {
+                            label.element.style.opacity = '0'; // 被地球阻挡，隐藏标签
+                            return;
+                        }
+                    }
+                    label.element.style.opacity = '1'; // 没被阻挡，显示标签
+                });
+
+                renderer.render(scene, camera);
+                labelRenderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', onWindowResize, false);
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                labelRenderer.setSize(window.innerWidth, window.innerHeight);
+                lineMaterial.resolution.set(window.innerWidth, window.innerHeight);
+            }
+        </script>
+    </body>
+
+</html>
