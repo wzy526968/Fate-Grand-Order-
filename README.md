@@ -1,4 +1,4 @@
-# 人理保障机构 CHALDEA 管理系统
+# FGO人理保障机构 CHALDEA 管理系统
 
 > 基于 Fate/Grand Order 世界观的全栈管理系统
 
